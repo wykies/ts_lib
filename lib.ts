@@ -6,7 +6,7 @@
  * @param {Object} obj object to be checked
  * @returns {Boolean} true if object is passed is undefined
  */
-function isUndefined(obj) {
+export function isUndefined(obj) {
     return typeof obj === "undefined";
 }
 
@@ -26,7 +26,7 @@ function isUndefined(obj) {
  * @param {type} context not sure, more testing needed
  * @returns {function} The run only once version of fn
  */
-function once(fn, context) {
+export function once(fn, context) {
     let result;
 
     return function () {
@@ -47,7 +47,7 @@ function once(fn, context) {
  * @param cond The condition that should be true
  * @param text The text to show on assert failure
  */
-function assertOrDie(cond, text) {
+export function assertOrDie(cond, text) {
     if (!cond)
         throw new Error(text || "Assertion failed!");
 }
@@ -58,7 +58,7 @@ function assertOrDie(cond, text) {
  * @param b {Date} the second time to check
  * @returns {boolean} true if a > b, considering only time and false otherwise
  */
-function isTimeGreater(a, b) {
+export function isTimeGreater(a, b) {
     return a.getHours() > b.getHours() ||
         (a.getHours() === b.getHours() && a.getMinutes() > b.getMinutes());
 }
@@ -69,7 +69,7 @@ function isTimeGreater(a, b) {
  * @param {Date} b the second date to check
  * @returns {boolean} true if they are on the same day and false otherwise
  */
-function isSameDay(a, b) {
+export function isSameDay(a, b) {
     return a.getDate() === b.getDate()
         && a.getMonth() === b.getMonth()
         && a.getFullYear() === b.getFullYear();
@@ -80,7 +80,7 @@ function isSameDay(a, b) {
  * @param aDate The datetime to extract the date from
  * @returns {Date} Date portion of date passed in
  */
-function getDateOnly(aDate) {
+export function getDateOnly(aDate) {
     return new Date(aDate.getFullYear(), aDate.getMonth(), aDate.getDate());
 }
 
@@ -90,7 +90,7 @@ function getDateOnly(aDate) {
  * @param minDigits {number} The minimum number of digits before the decimal point
  * @returns {string} The number prefixed with 0's as needed
  */
-function zeroPad(num, minDigits) {
+export function zeroPad(num, minDigits) {
     const intPart = Math.floor(num);
     const digitsNeeded = minDigits - (intPart + '').length;
     let prefix = '';
@@ -105,7 +105,7 @@ function zeroPad(num, minDigits) {
  * @param {Date} d the date to check
  * @returns {boolean} true if it is on the Epoch and false otherwise
  */
-function isOnEpochGSheets(d) {
+export function isOnEpochGSheets(d) {
     return isSameDay(d, getEpochGSheets());
 }
 
@@ -113,6 +113,6 @@ function isOnEpochGSheets(d) {
  * Returns the Epoch used by Google Sheets
  * @returns {Date} Google Sheets Epoch
  */
-function getEpochGSheets() {
+export function getEpochGSheets() {
     return new Date(1899, 11, 30);
 }

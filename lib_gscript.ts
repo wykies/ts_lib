@@ -2,17 +2,19 @@
 File to store google script specific library functions
  */
 
+import {isUndefined} from "./lib";
+
 /**
  * @OnlyCurrentDoc
  */
 
 
-function alertInfo(aMsg) {
+export function alertInfo(aMsg) {
     Logger.log(aMsg);
     SpreadsheetApp.getActiveSpreadsheet().toast(aMsg);
 }
 
-function alertError(aMsg) {
+export function alertError(aMsg) {
     aMsg = '⚠️' + ' Error: ' + aMsg;
     Logger.log(aMsg);
     SpreadsheetApp.getUi().alert(aMsg);
@@ -24,7 +26,7 @@ function alertError(aMsg) {
  * @param spreadsheet - The spreadsheet to use, or active if not defined
  * @returns {null|NamedRange} The named range if found else null
  */
-function getNamedRange(rangeName, spreadsheet = undefined) {
+export function getNamedRange(rangeName, spreadsheet = undefined) {
     if (isUndefined(spreadsheet)) {
         spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
     }
@@ -43,7 +45,7 @@ function getNamedRange(rangeName, spreadsheet = undefined) {
  * @param title The title of the dialog shown
  * @param prompt The message to display to the user
  */
-function confirmDestructiveAction(title, prompt) {
+export function confirmDestructiveAction(title, prompt) {
     const ui = SpreadsheetApp.getUi();
     const response = ui.alert(title, '⚠️' + ' Warning: ' + prompt, ui.ButtonSet.OK_CANCEL);
 
