@@ -1,16 +1,6 @@
 // Version 0.1
 
 /**
- * Function to simplify checking if object is defined
- *
- * @param {Object} obj object to be checked
- * @returns {Boolean} true if object is passed is undefined
- */
-export function isUndefined(obj) {
-    return typeof obj === "undefined";
-}
-
-/**
  * Use to create a run once version of a function
  * Example usage:
  *
