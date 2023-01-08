@@ -1,4 +1,4 @@
-// Version 1.19 (NOTE: This library has been DEPRECATED. SUPERSEDED by ts_lib)
+// Version 0.1
 
 /**
  * Function to simplify checking if object is defined
