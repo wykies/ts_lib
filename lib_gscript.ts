@@ -56,4 +56,23 @@ namespace LibGS {
 
         return response === ui.Button.OK;
     }
+
+    /**
+     * Returns the first empty row after and including `start_row`
+     * @param seek_col The column to check
+     * @param start_row The minimum row to return
+     * @param sheet The sheet to check on
+     */
+    export function getFirstEmptyRow(seek_col: number, start_row: number, sheet: GoogleAppsScript.Spreadsheet.Sheet): number {
+        const seekRange = sheet.getRange(start_row, seek_col, sheet.getMaxRows(), 1).getValues();
+        let first_empty_index: number;
+        for (first_empty_index = 0; first_empty_index < seekRange.length; first_empty_index++) {
+            Logger.log(`i: ${first_empty_index}  value: ${seekRange[first_empty_index][0]}`)
+            if (seekRange[first_empty_index][0] === "") {
+                Logger.log(`i: ${first_empty_index} Break!`)
+                break;
+            }
+        }
+        return first_empty_index + start_row;
+    }
 }
