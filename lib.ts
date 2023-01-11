@@ -1,5 +1,6 @@
 // Version 1.2
 // noinspection JSUnusedGlobalSymbols
+
 namespace Lib {
     /**
      * Use to create a run once version of a function
