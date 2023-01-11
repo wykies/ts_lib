@@ -108,4 +108,18 @@ namespace Lib {
     export function getEpochGSheets(): Date {
         return new Date(1899, 11, 30);
     }
+
+    export function generateDebugOutputOf2dArray<T>(arr: T[][]): string {
+        let result = "";
+        if (arr.length === 0 || arr[0].length === 0) {
+            return result;
+        }
+        for (let row = 0; row < arr.length; row++) {
+            for (let col = 0; col < arr[0].length; col++) {
+                result += `${arr[row][col]},`;
+            }
+            result += '\n'
+        }
+        return result;
+    }
 }
