@@ -109,7 +109,12 @@ namespace Lib {
         return new Date(1899, 11, 30);
     }
 
-    export function generateDebugOutputOf2dArray<T>(arr: T[][]): string {
+    /**
+     * Converts a 2d array into a csv string
+     *
+     * @param arr The array to be converted
+     */
+    export function generateCsvOutputFrom2dArray<T>(arr: T[][]): string {
         let result = "";
         if (arr.length === 0 || arr[0].length === 0) {
             return result;
@@ -121,5 +126,35 @@ namespace Lib {
             result += '\n'
         }
         return result;
+    }
+
+    /**
+     * Each unique value in `arr` is assigned a number and those numbers are used to generate a new array that is
+     * returned along with a dictionary of what the values  were converted to. This is helpful when the values in `arr`
+     * are too longer to be exported to say a string using `generateCsvOutputFrom2dArray`.
+     *
+     * NB: Values are converted to strings before comparison as this is used as the key to the dictionary.
+     *
+     * @param arr The values to be converted
+     */
+    export function arrValuesToNums<T>(arr: T[][]): [number[][], Record<string, number>] {
+        let nextID = 1;
+        const records: Record<string, number> = {};
+        const converted: number[][] = [];
+        for (let row = 0; row < arr.length; row++) {
+            const newRowValues = [];
+            converted.push(newRowValues);
+            for (let col = 0; col < arr[0].length; col++) {
+                const arrValueAsStr = `${arr[row][col]}`;
+                let value = records[arrValueAsStr];
+                if (value === undefined) {
+                    records[arrValueAsStr] = nextID++;
+                    value = records[arrValueAsStr]
+                    assertOrDie(records[arrValueAsStr] !== undefined, "Logic error this value was just supposed to have been set");
+                }
+                newRowValues.push(value);
+            }
+        }
+        return [converted, records];
     }
 }
