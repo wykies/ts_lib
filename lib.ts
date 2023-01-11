@@ -1,4 +1,4 @@
-// Version 1.4
+// Version 1.5
 // noinspection JSUnusedGlobalSymbols
 
 namespace Lib {

@@ -67,9 +67,7 @@ namespace LibGS {
         const seekRange = sheet.getRange(start_row, seek_col, sheet.getMaxRows(), 1).getValues();
         let first_empty_index: number;
         for (first_empty_index = 0; first_empty_index < seekRange.length; first_empty_index++) {
-            Logger.log(`i: ${first_empty_index}  value: ${seekRange[first_empty_index][0]}`)
             if (seekRange[first_empty_index][0] === "") {
-                Logger.log(`i: ${first_empty_index} Break!`)
                 break;
             }
         }
