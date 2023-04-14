@@ -24,7 +24,7 @@ namespace Lib {
         return function () {
             if (fn) {
                 result = fn.apply(context || this, arguments);
-                fn = null;
+                fn = function () { };
             }
 
             return result;
@@ -39,7 +39,7 @@ namespace Lib {
      * @param cond The condition that should be true
      * @param text The text to show on assert failure
      */
-    export function assertOrDie(cond: boolean, text: string) {
+    export function assertOrDie(cond: boolean, text?: string) {
         if (!cond)
             throw new Error(text || "Assertion failed!");
     }
@@ -142,7 +142,7 @@ namespace Lib {
         const records: Record<string, number> = {};
         const converted: number[][] = [];
         for (let row = 0; row < arr.length; row++) {
-            const newRowValues = [];
+            const newRowValues: number[] = [];
             converted.push(newRowValues);
             for (let col = 0; col < arr[0].length; col++) {
                 const arrValueAsStr = `${arr[row][col]}`;
