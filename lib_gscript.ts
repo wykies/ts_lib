@@ -30,7 +30,7 @@ namespace LibGS {
      * @param spreadsheet The spreadsheet to use, or active if not defined
      * @returns The named range if found else null
      */
-    export function getNamedRange(rangeName: string, spreadsheet: Spreadsheet = undefined): NamedRange {
+    export function getNamedRange(rangeName: string, spreadsheet?: Spreadsheet): NamedRange {
         if (spreadsheet === undefined) {
             spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
         }
