@@ -68,6 +68,16 @@ namespace Lib {
     }
 
     /**
+     * Check if the month of two dates is the same. NB: Must also be same year.
+     * @param {date} a the first date to check
+     * @param {date} b the second date to check
+     * @returns {Boolean} True if the month of the dates is the same otherwise false
+     */
+    export function isSameMonth(a: Date, b: Date) {
+        return a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+    }
+
+    /**
      * Returns only the date portion of the date passed
      * @param aDate The datetime to extract the date from
      * @returns Date portion of date passed in
@@ -168,5 +178,51 @@ namespace Lib {
             }
         }
         return false;
+    }
+
+    /**
+     * Asserts that the input is a number
+     */
+    export function assertIsNumber(val: any, msg_prefix?: string): number {
+        if (typeof val !== 'number') {
+            throw Error(`${(msg_prefix === undefined) ? '' : msg_prefix + ' '}Expected a number but got "${val}" of type "${typeof val}"`);
+        } else {
+            return val;
+        }
+    }
+
+    /**
+     * Asserts that the input is a date (Fails if objects are passed across frame boundaries)
+     */
+    export function assertIsDate(val: any, msg_prefix?: string): Date {
+        if (val instanceof Date) {
+            return val;
+        } else {
+            throw Error(`${(msg_prefix === undefined) ? '' : msg_prefix + ' '}Expected a date but got "${val}" of type "${typeof val}"`);
+        }
+    }
+
+
+    /**
+     * Ensures all inner arrays are the same length by increasing their length to the max length
+     */
+    export function makeAllInnerArraysSameLength(arr: any[][]) {
+        // Get max inner length
+        let max = 0;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === undefined) {
+                arr[i] = [];
+            }
+            if (arr[i].length > max) {
+                max = arr[i].length;
+            }
+        }
+
+        // Set all to max
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].length < max) {
+                arr[i][max - 1] = '';
+            }
+        }
     }
 }
