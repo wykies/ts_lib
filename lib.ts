@@ -157,4 +157,16 @@ namespace Lib {
         }
         return [converted, records];
     }
+
+    /**
+     * Returns true if any of the elements in the array are exactly equal to searchValue
+     */
+    export function arrayIncludes(searchValue: any, arr: any[]): boolean {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === searchValue) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
