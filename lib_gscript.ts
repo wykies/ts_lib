@@ -1,5 +1,3 @@
-// noinspection JSUnusedGlobalSymbols
-
 /*
 File to store google script specific library functions
  */
@@ -19,7 +17,7 @@ namespace LibGS {
     }
 
     export function alertError(aMsg: string) {
-        aMsg = '⚠️' + ' Error: ' + aMsg;
+        aMsg = `⚠️ ${aMsg}`;
         Logger.log(aMsg);
         SpreadsheetApp.getUi().alert(aMsg);
     }
