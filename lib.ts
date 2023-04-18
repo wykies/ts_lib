@@ -183,8 +183,21 @@ namespace Lib {
      * Asserts that the input is a number
      */
     export function assertIsNumber(val: any, msg_prefix?: string): number {
+        // TODO 4: Try to write generic version
         if (typeof val !== 'number') {
             throw Error(`${(msg_prefix === undefined) ? '' : msg_prefix + ' '}Expected a number but got "${val}" of type "${typeof val}"`);
+        } else {
+            return val;
+        }
+    }
+
+    /**
+     * Asserts that the input is a string
+     */
+    export function assertIsString(val: any, msg_prefix?: string): string {
+        // TODO 4: Try to write generic version
+        if (typeof val !== 'string') {
+            throw Error(`${(msg_prefix === undefined) ? '' : msg_prefix + ' '}Expected a string but got "${val}" of type "${typeof val}"`);
         } else {
             return val;
         }
