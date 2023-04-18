@@ -1,4 +1,4 @@
-// Version 1.7
+// Version 1.8
 
 namespace Lib {
     /**
@@ -183,8 +183,21 @@ namespace Lib {
      * Asserts that the input is a number
      */
     export function assertIsNumber(val: any, msg_prefix?: string): number {
+        // TODO 4: Try to write generic version
         if (typeof val !== 'number') {
             throw Error(`${(msg_prefix === undefined) ? '' : msg_prefix + ' '}Expected a number but got "${val}" of type "${typeof val}"`);
+        } else {
+            return val;
+        }
+    }
+
+    /**
+     * Asserts that the input is a string
+     */
+    export function assertIsString(val: any, msg_prefix?: string): string {
+        // TODO 4: Try to write generic version
+        if (typeof val !== 'string') {
+            throw Error(`${(msg_prefix === undefined) ? '' : msg_prefix + ' '}Expected a string but got "${val}" of type "${typeof val}"`);
         } else {
             return val;
         }
@@ -223,5 +236,36 @@ namespace Lib {
                 arr[i][max - 1] = '';
             }
         }
+    }
+
+
+    /**
+     * Throws and Error if all the inner arrays are not the same length
+     * @param arr Array to be checked
+     */
+    export function assertArrayIsRectangular(arr: any[][]) {
+        if (arr.length == 0) {
+            return;
+        }
+
+        const expected_length = arr[0].length;
+        for (let i = 1; i < arr.length; i++) {
+            if (arr[i].length !== expected_length) {
+                throw new Error(`All inner arrays are not the same length. The first was ${expected_length} but the one in position ${i} is ${arr[i].length}`);
+            }
+        }
+    }
+
+    export function assertAllElementsAreString(arr: any[][], name: string = "all elements"): string[][] {
+        // TODO 4: Try to make a generic version
+        for (let row = 0; row < arr.length; row++) {
+            for (let col = 0; col < arr[0].length; col++) {
+                const element = arr[row][col];
+                if (typeof element != 'string') {
+                    throw new Error(`Expected ${name} to be of type string but got '${element}' of type ${typeof element} in row: ${row}, col: ${col}`);
+                }
+            }
+        }
+        return arr;
     }
 }
