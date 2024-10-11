@@ -6,10 +6,6 @@ File to store google script specific library functions
 import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import NamedRange = GoogleAppsScript.Spreadsheet.NamedRange;
 
-/**
- * @OnlyCurrentDoc
- */
-
 namespace LibGS {
     export function alertInfo(aMsg: string) {
         Logger.log(aMsg);
