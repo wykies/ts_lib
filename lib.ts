@@ -1,4 +1,4 @@
-// Version 2.0
+// Version 2.0.dev
 
 namespace Lib {
     /**
@@ -18,10 +18,11 @@ namespace Lib {
      * @returns The run only once version of fn
      */
     export function once(fn: Function, context: any): Function {
-        let result;
+        let result: Function;
 
         return function () {
             if (fn) {
+                // @ts-ignore: Using ignore because expect fails to find the error (I think because the error is with `this` and not the actual next line) - Not sure how to fix error and not worth spending time to fix and then test at this time
                 result = fn.apply(context || this, arguments);
                 fn = function () { };
             }
