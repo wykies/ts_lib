@@ -87,6 +87,23 @@ namespace Lib {
     }
 
     /**
+     * Merges the date of one date with the time of another
+     * @param date_part Use only date part of this
+     * @param time_part Use only time part of this
+     * @returns A new date with the date of the first argument and the time of the second
+     */
+    export function mergeDateAndTime(date_part: Date, time_part: Date): Date {
+        return new Date(
+            date_part.getFullYear(),
+            date_part.getMonth(),
+            date_part.getDate(),
+            time_part.getHours(),
+            time_part.getMinutes(),
+            time_part.getSeconds(),
+            time_part.getMilliseconds())
+    }
+
+    /**
      * Prepends 0's if number has less than `minDigits` before the decimal point
      * @param num The number to prepend the 0's to
      * @param minDigits The minimum number of digits before the decimal point
