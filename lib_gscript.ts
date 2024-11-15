@@ -6,10 +6,6 @@ File to store google script specific library functions
 import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import NamedRange = GoogleAppsScript.Spreadsheet.NamedRange;
 
-/**
- * @OnlyCurrentDoc
- */
-
 namespace LibGS {
     export function alertInfo(aMsg: string) {
         Logger.log(aMsg);
@@ -28,7 +24,7 @@ namespace LibGS {
      * @param spreadsheet The spreadsheet to use, or active if not defined
      * @returns The named range if found else null
      */
-    export function getNamedRange(rangeName: string, spreadsheet?: Spreadsheet): NamedRange {
+    export function getNamedRange(rangeName: string, spreadsheet?: Spreadsheet): NamedRange | null {
         if (spreadsheet === undefined) {
             spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
         }

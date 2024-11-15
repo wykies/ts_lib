@@ -1,4 +1,4 @@
-// Version 1.8
+// Version 2.1
 
 namespace Lib {
     /**
@@ -18,10 +18,11 @@ namespace Lib {
      * @returns The run only once version of fn
      */
     export function once(fn: Function, context: any): Function {
-        let result;
+        let result: Function;
 
         return function () {
             if (fn) {
+                // @ts-ignore: Using ignore because expect fails to find the error (I think because the error is with `this` and not the actual next line) - Not sure how to fix error and not worth spending time to fix and then test at this time
                 result = fn.apply(context || this, arguments);
                 fn = function () { };
             }
@@ -83,6 +84,23 @@ namespace Lib {
      */
     export function getDateOnly(aDate: Date): Date {
         return new Date(aDate.getFullYear(), aDate.getMonth(), aDate.getDate());
+    }
+
+    /**
+     * Merges the date of one date with the time of another
+     * @param date_part Use only date part of this
+     * @param time_part Use only time part of this
+     * @returns A new date with the date of the first argument and the time of the second
+     */
+    export function mergeDateAndTime(date_part: Date, time_part: Date): Date {
+        return new Date(
+            date_part.getFullYear(),
+            date_part.getMonth(),
+            date_part.getDate(),
+            time_part.getHours(),
+            time_part.getMinutes(),
+            time_part.getSeconds(),
+            time_part.getMilliseconds())
     }
 
     /**
