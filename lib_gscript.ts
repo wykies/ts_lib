@@ -130,7 +130,7 @@ function isEmpty(e: GoogleAppsScript.Events.SheetsOnEdit, sheet: GoogleAppsScrip
  * @param e onEdit event
  * @param sheet Sheet for the onEdit event
  * @param config Configuration to use to try to find a match
- * @returns
+ * @returns the column for the date if a match is found
  */
 function calculateOutputCol(
   e: GoogleAppsScript.Events.SheetsOnEdit,
