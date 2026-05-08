@@ -69,3 +69,83 @@ export function getFirstEmptyRow(
   }
   return first_empty_index + start_row;
 }
+
+export type DateAutoFillConfig = {
+  sheetName: string;
+  cols: {
+    outputCol: number;
+    triggerCol: number;
+  }[];
+}[];
+
+/**
+ * Fills in or clears the date column based on the new contents of the trigger column if matched
+ * @param e onEdit event
+ * @param config Specifies which cells trigger the date update
+ */
+export function autoFillDate(e: GoogleAppsScript.Events.SheetsOnEdit, config: DateAutoFillConfig) {
+  const sheet = e.source.getActiveSheet();
+
+  if (e.range.getWidth() === 1 && e.range.getHeight() === 1) {
+    let outputCol = calculateOutputCol(e, sheet, config);
+    if (outputCol === undefined) {
+      // No output necessary
+      return;
+    }
+
+    const dateCell = sheet.getRange(e.range.getRow(), outputCol);
+
+    if (isEmpty(e, sheet)) {
+      // Trigger cell was cleared, remove date
+      dateCell.clearContent();
+    } else if (dateCell.getValue() == "") {
+      // Insert the current date and time
+      dateCell.setValue(new Date());
+    } else {
+      // Already has a value no change made
+    }
+  }
+}
+
+/**
+ * @param e onEdit event
+ * @param sheet Sheet for the onEdit event
+ * @returns true if the value of the changed cell is empty accounting for the
+ *          fact that when the user copies and paste the value comes in as
+ *          undefined so in that case we need to do an extra read from the
+ *          sheet to get the value
+ */
+function isEmpty(e: GoogleAppsScript.Events.SheetsOnEdit, sheet: GoogleAppsScript.Spreadsheet.Sheet): boolean {
+  let value = e.value;
+  if (value === undefined) {
+    // When the user copies and pastes the value comes in as undefined
+    value = sheet.getSheetValues(e.range.getRow(), e.range.getColumn(), 1, 1)[0][0];
+  }
+  return value == "" || value == "FALSE" || value == null;
+}
+
+/**
+ * Check if the edited cell is one of the trigger cells and if yes returns the
+ * column the date should go into
+ * @param e onEdit event
+ * @param sheet Sheet for the onEdit event
+ * @param config Configuration to use to try to find a match
+ * @returns
+ */
+function calculateOutputCol(
+  e: GoogleAppsScript.Events.SheetsOnEdit,
+  sheet: GoogleAppsScript.Spreadsheet.Sheet,
+  config: DateAutoFillConfig,
+): number | undefined {
+  for (const match_config of config) {
+    if (sheet.getName() == match_config.sheetName) {
+      for (const cols of match_config.cols) {
+        if (e.range.getColumn() == cols.triggerCol) {
+          return cols.outputCol;
+        }
+      }
+    }
+  }
+
+  return undefined; // No match found
+}
