@@ -60,12 +60,14 @@ export function confirmDestructiveAction(title: string, prompt: string): boolean
  * @param seek_col The column to check
  * @param start_row The minimum row to return
  * @param sheet The sheet to check on
+ * @param expected_clear number of rows expected to be clear after the last row, if 0 this will be ignored
  */
 export function getFirstEmptyRow(
   seek_col: number,
   start_row: number,
   sheet: Sheet,
-): number {
+  expected_clear: number = 100,
+): Result<number> {
   const seekRange = sheet.getRange(start_row, seek_col, sheet.getMaxRows(), 1).getValues();
   let first_empty_index: number;
   for (first_empty_index = 0; first_empty_index < seekRange.length; first_empty_index++) {
@@ -73,7 +75,19 @@ export function getFirstEmptyRow(
       break;
     }
   }
-  return first_empty_index + start_row;
+
+  const clearSearchLimit = Math.min(seekRange.length, first_empty_index + expected_clear);
+  for (let i = first_empty_index + 1; i < clearSearchLimit; i++) {
+    if (seekRange[i][0] !== "") {
+      return new ErrorAsValue(
+        `expected ${expected_clear} clear rows after first empty but found ${seekRange[i][0]} on row: ${
+          first_empty_index + i
+        }`,
+      );
+    }
+  }
+
+  return new Ok(first_empty_index + start_row);
 }
 
 export type DateAutoFillConfig = {
