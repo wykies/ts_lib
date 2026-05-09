@@ -1,6 +1,32 @@
 // Version 2.1
 
 /**
+ * Simplified Result type instead of adding a dependency
+ */
+export type Result<T> = Ok<T> | ErrorAsValue;
+
+/**
+ * Simplified Ok type to be used as part of Result
+ */
+export class Ok<T> {
+  value: T;
+  constructor(value: T) {
+    this.value = value;
+  }
+}
+
+/**
+ * Simplified Error type to be used with Result
+ */
+export class ErrorAsValue {
+  msg: string;
+
+  constructor(msg: string) {
+    this.msg = msg;
+  }
+}
+
+/**
  * Use to create a run once version of a function
  * Example usage:
  *
