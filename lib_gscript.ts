@@ -6,6 +6,7 @@ import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import NamedRange = GoogleAppsScript.Spreadsheet.NamedRange;
 import SheetsOnEdit = GoogleAppsScript.Events.SheetsOnEdit;
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
+import { ErrorAsValue, Ok, Result } from "./lib";
 
 export function alertInfo(aMsg: string) {
   Logger.log(aMsg);
@@ -153,4 +154,42 @@ function calculateOutputCol(
   }
 
   return undefined; // No match found
+}
+
+/**
+ * Updates a sheet protection to start its "excepted" (editable) range at a new row.
+ * @param sheet the sheet to modify the protection on
+ * @param newStartRow The row number where the exception(unprotected) range should now begin.
+ * @returns null if the function completes successfully or ErrorAsValue if the function fails
+ */
+export function updateSheetProtectionExceptionsRow(
+  sheet: Sheet,
+  newStartRow: number,
+): Result<null> {
+  Logger.log(`updateSheetProtectionExceptionsRow called on sheet: ${sheet.getName()}`);
+
+  // Get the sheet protection
+  const protection = sheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0];
+  if (protection === undefined) {
+    return new ErrorAsValue("no sheet protection found");
+  }
+
+  // Get the current exception ranges
+  let currUnprotectedRanges = protection.getUnprotectedRanges();
+  let newRangesA1 = [];
+  for (const range of currUnprotectedRanges) {
+    if (newStartRow >= range.getLastRow()) {
+      return new ErrorAsValue(
+        `unable to update unprotected range because end row of range is at or before the new start. End: ${range.getLastRow()} and newStart: ${newStartRow}`,
+      );
+    }
+    let newRange = range.getA1Notation().replace(/\d+/, newStartRow.toString());
+    Logger.log(`Old: ${range.getA1Notation()}, New: ${newRange}`);
+    newRangesA1.push(sheet.getRange(newRange));
+  }
+
+  // Replace the ranges
+  protection.setUnprotectedRanges(newRangesA1);
+
+  return new Ok(null); // Signal successful completion
 }
