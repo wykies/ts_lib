@@ -4,6 +4,8 @@ File to store google script specific library functions
 
 import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import NamedRange = GoogleAppsScript.Spreadsheet.NamedRange;
+import SheetsOnEdit = GoogleAppsScript.Events.SheetsOnEdit;
+import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
 
 export function alertInfo(aMsg: string) {
   Logger.log(aMsg);
@@ -51,6 +53,9 @@ export function confirmDestructiveAction(title: string, prompt: string): boolean
 
 /**
  * Returns the first empty row after and including `start_row`
+ *
+ * Note: if you just want the last filled row in the sheet see Sheet.getLastRow()
+ *
  * @param seek_col The column to check
  * @param start_row The minimum row to return
  * @param sheet The sheet to check on
@@ -58,7 +63,7 @@ export function confirmDestructiveAction(title: string, prompt: string): boolean
 export function getFirstEmptyRow(
   seek_col: number,
   start_row: number,
-  sheet: GoogleAppsScript.Spreadsheet.Sheet,
+  sheet: Sheet,
 ): number {
   const seekRange = sheet.getRange(start_row, seek_col, sheet.getMaxRows(), 1).getValues();
   let first_empty_index: number;
@@ -83,7 +88,7 @@ export type DateAutoFillConfig = {
  * @param e onEdit event
  * @param config Specifies which cells trigger the date update
  */
-export function autoFillDate(e: GoogleAppsScript.Events.SheetsOnEdit, config: DateAutoFillConfig) {
+export function autoFillDate(e: SheetsOnEdit, config: DateAutoFillConfig) {
   const sheet = e.source.getActiveSheet();
 
   if (e.range.getWidth() === 1 && e.range.getHeight() === 1) {
@@ -115,7 +120,7 @@ export function autoFillDate(e: GoogleAppsScript.Events.SheetsOnEdit, config: Da
  *          undefined so in that case we need to do an extra read from the
  *          sheet to get the value
  */
-function isEmpty(e: GoogleAppsScript.Events.SheetsOnEdit, sheet: GoogleAppsScript.Spreadsheet.Sheet): boolean {
+function isEmpty(e: SheetsOnEdit, sheet: Sheet): boolean {
   let value = e.value;
   if (value === undefined) {
     // When the user copies and pastes the value comes in as undefined
@@ -133,8 +138,8 @@ function isEmpty(e: GoogleAppsScript.Events.SheetsOnEdit, sheet: GoogleAppsScrip
  * @returns the column for the date if a match is found
  */
 function calculateOutputCol(
-  e: GoogleAppsScript.Events.SheetsOnEdit,
-  sheet: GoogleAppsScript.Spreadsheet.Sheet,
+  e: SheetsOnEdit,
+  sheet: Sheet,
   config: DateAutoFillConfig,
 ): number | undefined {
   for (const match_config of config) {
