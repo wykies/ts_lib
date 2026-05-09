@@ -27,36 +27,6 @@ export class ErrorAsValue {
 }
 
 /**
- * Use to create a run once version of a function
- * Example usage:
- *
- * let myRunOnceFunc = once(function (value) {
- *   console.log('Fired!');
- *   return "Input value was " + value;
- * });
- *
- * console.log(myRunOnceFunc(123)); //"Fired" and "Input value was 123"
- * console.log(myRunOnceFunc(2)); //Only "Input value was 123"
- *
- * @param fn function to be converted
- * @param context not sure, more testing needed
- * @returns The run only once version of fn
- */
-export function once(fn: Function, context: any): Function {
-  let result: Function;
-
-  return function() {
-    if (fn) {
-      // @ts-ignore: Using ignore because expect fails to find the error (I think because the error is with `this` and not the actual next line) - Not sure how to fix error and not worth spending time to fix and then test at this time
-      result = fn.apply(context || this, arguments);
-      fn = function() {};
-    }
-
-    return result;
-  };
-}
-
-/**
  * Asserts the condition and if it fails throws an exception.
  *
  * Patterned on <https://gist.github.com/jeromeetienne/2651899>
