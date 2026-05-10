@@ -82,9 +82,9 @@ export function getFirstEmptyRow(
   for (let i = first_empty_index + 1; i < clearSearchLimit; i++) {
     if (seekRange[i][0] !== "") {
       return new Error(
-        `expected ${expectedClear} clear rows after first empty but found ${seekRange[i][0]} on row: ${
-          first_empty_index + i
-        }`,
+        `expected ${expectedClear} clear rows after first empty on row: ${first_empty_index + startRow} but on row: ${
+          i + startRow
+        } found: ${seekRange[i][0]}`,
       );
     }
   }
@@ -230,6 +230,7 @@ export function updateSheetProtectionExceptionsRowByFirstEmptyRow(
   startRow: number,
   expectedClear: number = 100,
 ): Result<null> {
+  Logger.log(`updateSheetProtectionExceptionsRowByFirstEmptyRow called on sheet: ${sheetName}`);
   let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
 
   if (sheet === null) {
