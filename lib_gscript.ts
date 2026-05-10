@@ -191,6 +191,7 @@ export function updateSheetProtectionExceptionsRow(
   }
 
   // Get the current exception ranges
+  let hasChange = false;
   let currUnprotectedRanges = protection.getUnprotectedRanges();
   let newRangesA1 = [];
   for (const range of currUnprotectedRanges) {
@@ -202,10 +203,16 @@ export function updateSheetProtectionExceptionsRow(
     let newRange = range.getA1Notation().replace(/\d+/, newStartRow.toString());
     Logger.log(`Old: ${range.getA1Notation()}, New: ${newRange}`);
     newRangesA1.push(sheet.getRange(newRange));
+    hasChange = hasChange || range.getRow() !== newStartRow;
   }
 
   // Replace the ranges
-  protection.setUnprotectedRanges(newRangesA1);
+  if (hasChange) {
+    protection.setUnprotectedRanges(newRangesA1);
+    Logger.log("New ranges set");
+  } else {
+    Logger.log("No change made as ranges are the same");
+  }
 
   return new Ok(null); // Signal successful completion
 }
