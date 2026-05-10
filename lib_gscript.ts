@@ -6,7 +6,7 @@ import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import NamedRange = GoogleAppsScript.Spreadsheet.NamedRange;
 import SheetsOnEdit = GoogleAppsScript.Events.SheetsOnEdit;
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
-import { Ok, Result } from "./lib";
+import { isErr, isOk, Ok, Result } from "./lib";
 
 export function alertInfo(aMsg: string) {
   Logger.log(aMsg);
@@ -59,18 +59,18 @@ export function confirmDestructiveAction(title: string, prompt: string): boolean
  *  Sheet.getLastRow(), it's worthwhile to mention this may not give you want
  *  you want especially if there are formula that go all the way down the sheet
  *
- * @param seek_col The column to check
- * @param start_row The minimum row to return
+ * @param seekCol The column to check
+ * @param startRow The minimum row to return
  * @param sheet The sheet to check on
- * @param expected_clear number of rows expected to be clear after the last row, if 0 this will be ignored
+ * @param expectedClear number of rows expected to be clear after the last row, if 0 this will be ignored
  */
 export function getFirstEmptyRow(
-  seek_col: number,
-  start_row: number,
+  seekCol: number,
+  startRow: number,
   sheet: Sheet,
-  expected_clear: number = 100,
+  expectedClear: number = 100,
 ): Result<number> {
-  const seekRange = sheet.getRange(start_row, seek_col, sheet.getMaxRows(), 1).getValues();
+  const seekRange = sheet.getRange(startRow, seekCol, sheet.getMaxRows(), 1).getValues();
   let first_empty_index: number;
   for (first_empty_index = 0; first_empty_index < seekRange.length; first_empty_index++) {
     if (seekRange[first_empty_index][0] === "") {
@@ -78,18 +78,18 @@ export function getFirstEmptyRow(
     }
   }
 
-  const clearSearchLimit = Math.min(seekRange.length, first_empty_index + expected_clear);
+  const clearSearchLimit = Math.min(seekRange.length, first_empty_index + expectedClear);
   for (let i = first_empty_index + 1; i < clearSearchLimit; i++) {
     if (seekRange[i][0] !== "") {
       return new Error(
-        `expected ${expected_clear} clear rows after first empty but found ${seekRange[i][0]} on row: ${
+        `expected ${expectedClear} clear rows after first empty but found ${seekRange[i][0]} on row: ${
           first_empty_index + i
         }`,
       );
     }
   }
 
-  return new Ok(first_empty_index + start_row);
+  return new Ok(first_empty_index + startRow);
 }
 
 export type DateAutoFillConfig = {
@@ -215,4 +215,35 @@ export function updateSheetProtectionExceptionsRow(
   }
 
   return new Ok(null); // Signal successful completion
+}
+
+/**
+ * Locks the fill in rows based on seek_col
+ * @param sheetName name of the sheet to update the locks on
+ * @param seekCol The column to check
+ * @param startRow The minimum row to return
+ * @param expectedClear number of rows expected to be clear after the last row, if 0 this will be ignored
+ */
+export function updateSheetProtectionExceptionsRowByFirstEmptyRow(
+  sheetName: string,
+  seekCol: number,
+  startRow: number,
+  expectedClear: number = 100,
+): Result<null> {
+  let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+
+  if (sheet === null) {
+    return Error(`Unable to find sheet named '${sheetName}'`);
+  }
+  let end_row = getFirstEmptyRow(seekCol, startRow, sheet);
+  if (isOk(end_row)) {
+    let res = updateSheetProtectionExceptionsRow(sheet, end_row.value);
+    if (isErr(res)) {
+      return res;
+    }
+  } else {
+    return end_row;
+  }
+
+  return new Ok(null);
 }
