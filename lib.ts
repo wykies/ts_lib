@@ -3,7 +3,7 @@
 /**
  * Simplified Result type instead of adding a dependency
  */
-export type Result<T> = Ok<T> | ErrorAsValue;
+export type Result<T> = Ok<T> | Error;
 
 /**
  * Simplified Ok type to be used as part of Result
@@ -15,15 +15,12 @@ export class Ok<T> {
   }
 }
 
-/**
- * Simplified Error type to be used with Result
- */
-export class ErrorAsValue {
-  msg: string;
+export function isOk<T>(result: Result<T>): result is Ok<T> {
+  return Object.prototype.hasOwnProperty.call(result, "value");
+}
 
-  constructor(msg: string) {
-    this.msg = msg;
-  }
+export function isErr<T>(result: Result<T>): result is Error {
+  return !isOk(result);
 }
 
 /**

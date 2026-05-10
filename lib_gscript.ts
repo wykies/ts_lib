@@ -6,7 +6,7 @@ import Spreadsheet = GoogleAppsScript.Spreadsheet.Spreadsheet;
 import NamedRange = GoogleAppsScript.Spreadsheet.NamedRange;
 import SheetsOnEdit = GoogleAppsScript.Events.SheetsOnEdit;
 import Sheet = GoogleAppsScript.Spreadsheet.Sheet;
-import { ErrorAsValue, Ok, Result } from "./lib";
+import { Ok, Result } from "./lib";
 
 export function alertInfo(aMsg: string) {
   Logger.log(aMsg);
@@ -81,7 +81,7 @@ export function getFirstEmptyRow(
   const clearSearchLimit = Math.min(seekRange.length, first_empty_index + expected_clear);
   for (let i = first_empty_index + 1; i < clearSearchLimit; i++) {
     if (seekRange[i][0] !== "") {
-      return new ErrorAsValue(
+      return new Error(
         `expected ${expected_clear} clear rows after first empty but found ${seekRange[i][0]} on row: ${
           first_empty_index + i
         }`,
@@ -187,7 +187,7 @@ export function updateSheetProtectionExceptionsRow(
   // Get the sheet protection
   const protection = sheet.getProtections(SpreadsheetApp.ProtectionType.SHEET)[0];
   if (protection === undefined) {
-    return new ErrorAsValue("no sheet protection found");
+    return new Error("no sheet protection found");
   }
 
   // Get the current exception ranges
@@ -195,7 +195,7 @@ export function updateSheetProtectionExceptionsRow(
   let newRangesA1 = [];
   for (const range of currUnprotectedRanges) {
     if (newStartRow >= range.getLastRow()) {
-      return new ErrorAsValue(
+      return new Error(
         `unable to update unprotected range because end row of range is at or before the new start. End: ${range.getLastRow()} and newStart: ${newStartRow}`,
       );
     }
