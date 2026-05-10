@@ -55,7 +55,9 @@ export function confirmDestructiveAction(title: string, prompt: string): boolean
 /**
  * Returns the first empty row after and including `start_row`
  *
- * Note: if you just want the last filled row in the sheet see Sheet.getLastRow()
+ * Note: if you just want the last filled row in the sheet see
+ *  Sheet.getLastRow(), it's worthwhile to mention this may not give you want
+ *  you want especially if there are formula that go all the way down the sheet
  *
  * @param seek_col The column to check
  * @param start_row The minimum row to return
