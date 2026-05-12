@@ -229,9 +229,13 @@ export function updateSheetProtectionExceptionsRowByFirstEmptyRow(
   seekCol: number,
   startRow: number,
   expectedClear: number = 100,
+  spreadsheet?: Spreadsheet,
 ): Result<null> {
   Logger.log(`updateSheetProtectionExceptionsRowByFirstEmptyRow called on sheet: ${sheetName}`);
-  let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (spreadsheet === undefined) {
+    spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  }
+  let sheet = spreadsheet.getSheetByName(sheetName);
 
   if (sheet === null) {
     return Error(`Unable to find sheet named '${sheetName}'`);
