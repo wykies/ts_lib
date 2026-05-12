@@ -1,4 +1,4 @@
-// Version 3.0
+// Version 3.1.0
 
 /**
  * Simplified Result type instead of adding a dependency
@@ -210,13 +210,21 @@ export function assertIsNumber(val: any, msg_prefix?: string): number {
  */
 export function assertIsString(val: any, msg_prefix?: string): string {
   // TODO 4: Try to write generic version
-  if (typeof val !== "string") {
+  if (!isString(val)) {
     throw Error(
       `${(msg_prefix === undefined) ? "" : msg_prefix + " "}Expected a string but got "${val}" of type "${typeof val}"`,
     );
   } else {
     return val;
   }
+}
+/**
+ * Tests if the input is string
+ * @param value to be check
+ * @returns confirmation that the input was or wasn't a string
+ */
+export function isString(value: unknown): value is string {
+  return typeof value === "string";
 }
 
 /**
