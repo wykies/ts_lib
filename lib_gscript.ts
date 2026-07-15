@@ -176,11 +176,13 @@ function calculateOutputCol(
  * Updates a sheet protection to start its "excepted" (editable) range at a new row.
  * @param sheet the sheet to modify the protection on
  * @param newStartRow The row number where the exception(unprotected) range should now begin.
+ * @param extendRangeToEnd if true will extend the unlocked range to the max row
  * @returns null if the function completes successfully or ErrorAsValue if the function fails
  */
 export function updateSheetProtectionExceptionsRow(
   sheet: Sheet,
   newStartRow: number,
+  extendRangeToEnd: boolean,
 ): Result<null> {
   Logger.log(`updateSheetProtectionExceptionsRow called on sheet: ${sheet.getName()}`);
 
@@ -195,15 +197,20 @@ export function updateSheetProtectionExceptionsRow(
   let currUnprotectedRanges = protection.getUnprotectedRanges();
   let newRangesA1 = [];
   for (const range of currUnprotectedRanges) {
-    if (newStartRow >= range.getLastRow()) {
+    const newEndRow = extendRangeToEnd ? sheet.getMaxRows() : range.getLastRow();
+    if (!extendRangeToEnd && newStartRow >= newEndRow) {
       return new Error(
-        `unable to update unprotected range because end row of range is at or before the new start. End: ${range.getLastRow()} and newStart: ${newStartRow}`,
+        `unable to update unprotected range because end row of range is at or before the new start. End: ${newEndRow} and newStart: ${newStartRow}`,
       );
     }
     let newRange = range.getA1Notation().replace(/\d+/, newStartRow.toString());
+    if (extendRangeToEnd) {
+      // Replaces the existing trailing numbers with the new row number
+      newRange = newRange.replace(/(:\$?[A-Za-z]+)\d*$/, `$1${newEndRow}`);
+    }
     Logger.log(`Old: ${range.getA1Notation()}, New: ${newRange}`);
     newRangesA1.push(sheet.getRange(newRange));
-    hasChange = hasChange || range.getRow() !== newStartRow;
+    hasChange = hasChange || range.getRow() !== newStartRow || range.getLastRow() !== newEndRow;
   }
 
   // Replace the ranges
@@ -242,7 +249,7 @@ export function updateSheetProtectionExceptionsRowByFirstEmptyRow(
   }
   let end_row = getFirstEmptyRow(seekCol, startRow, sheet);
   if (isOk(end_row)) {
-    let res = updateSheetProtectionExceptionsRow(sheet, end_row.value);
+    let res = updateSheetProtectionExceptionsRow(sheet, end_row.value, true);
     if (isErr(res)) {
       return res;
     }
