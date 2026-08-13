@@ -1,4 +1,4 @@
-// Version 4.0.0
+// Version 4.0.1
 
 /**
  * Simplified Result type instead of adding a dependency
