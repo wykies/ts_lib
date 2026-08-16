@@ -247,7 +247,7 @@ export function updateSheetProtectionExceptionsRowByFirstEmptyRow(
   if (sheet === null) {
     return Error(`Unable to find sheet named '${sheetName}'`);
   }
-  let end_row = getFirstEmptyRow(seekCol, startRow, sheet);
+  let end_row = getFirstEmptyRow(seekCol, startRow, sheet, expectedClear);
   if (isOk(end_row)) {
     let res = updateSheetProtectionExceptionsRow(sheet, end_row.value, true);
     if (isErr(res)) {
